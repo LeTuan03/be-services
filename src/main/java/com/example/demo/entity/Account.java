@@ -3,6 +3,8 @@ package com.example.demo.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.Set;
 
 @Entity
@@ -16,12 +18,19 @@ public class Account {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String name;
-
+    @NotNull(message = "Username cannot be null")
+    @Size(min = 1, message = "Username cannot be empty")
     private String username;
 
+    @NotNull(message = "Password cannot be null")
+    @Size(min = 1, message = "Password cannot be empty")
     private String password;
 
-    @OneToMany(mappedBy = "accountId", cascade = CascadeType.ALL, orphanRemoval = true)
+
+    @NotNull(message = "Role cannot be null")
+    @Size(min = 1, message = "Role cannot be empty")
+    private String role;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Project> projects;
 }

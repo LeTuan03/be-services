@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.Account;
 import com.example.demo.repo.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins = "*")
 public class AccountController {
 
     @Autowired
@@ -56,7 +58,7 @@ public class AccountController {
             Account updatedAccountData = oldAccountData.get();
             updatedAccountData.setUsername(newAccountData.getUsername());
             updatedAccountData.setPassword(newAccountData.getPassword());
-//            updatedAccountData.setRole(newAccountData.getRole());
+            updatedAccountData.setRole(newAccountData.getRole());
 
             Account accountObj =  accountsRepo.save(updatedAccountData);
             return new ResponseEntity<>(accountObj, HttpStatus.OK);
@@ -69,4 +71,24 @@ public class AccountController {
         accountsRepo.deleteById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Account> login(@RequestBody LoginRequest loginRequest) {
+        try {
+            Account account = accountsRepo.findByUsernameAndPassword(
+                    loginRequest.getUsername(),
+                    loginRequest.getPassword()
+            );
+
+            if (account != null) {
+                return new ResponseEntity<>(account, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
 }

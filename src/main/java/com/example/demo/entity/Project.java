@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "tbl_project")
@@ -18,4 +19,26 @@ public class Project {
     private String name;
 
     private Integer accountId;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    private Date startDate;
+
+    private  Date endDate;
+
+    private Date createdBy;
+
+    private Date updatedAt;
+
+    private String status;
+
+    private String note;
+
+    private String description;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
 }
