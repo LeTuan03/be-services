@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Entity
@@ -14,8 +15,9 @@ import java.util.Date;
 public class Project {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
+    @NotNull(message = "Role cannot be null")
     private String name;
 
     private Integer accountId;
@@ -27,7 +29,7 @@ public class Project {
 
     private  Date endDate;
 
-    private Date createdBy;
+    private Integer createdBy;
 
     private Date updatedAt;
 

@@ -5,6 +5,7 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.Date;
 import java.util.Set;
 
 @Entity
@@ -16,7 +17,7 @@ import java.util.Set;
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
 
     @NotNull(message = "Username cannot be null")
     @Size(min = 1, message = "Username cannot be empty")
@@ -30,6 +31,18 @@ public class Account {
     @NotNull(message = "Role cannot be null")
     @Size(min = 1, message = "Role cannot be empty")
     private String role;
+
+    private String email;
+
+    private String phone;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        this.createdAt = new Date();
+    }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "accountId", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Project> projects;

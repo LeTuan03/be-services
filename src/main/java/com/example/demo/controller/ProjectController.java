@@ -31,14 +31,16 @@ public class ProjectController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
     @GetMapping("/getProjectById/{id}")
     public ResponseEntity<Project> getProjectById(@PathVariable Long id) {
         Optional<Project> projectData = projectsRepo.findById(id);
 
-        if(projectData.isPresent()) {
+        if (projectData.isPresent()) {
             return new ResponseEntity<>(projectData.get(), HttpStatus.OK);
         }
-        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/addProject")
@@ -97,14 +99,14 @@ public class ProjectController {
     }
 
     @GetMapping("/getProjectsByAccountId/{accountId}")
-    public ResponseEntity<List<Project>> getProjectsByAccountId(@PathVariable Integer accountId) {
+    public ResponseEntity<?> getProjectsByAccountId(@PathVariable Integer accountId) {
         List<Project> projectsData = projectsRepo.findByAccountId(accountId);
 
         if (!projectsData.isEmpty()) {
             return new ResponseEntity<>(projectsData, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("There are currently no projects", HttpStatus.NO_CONTENT);
         }
-
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
 

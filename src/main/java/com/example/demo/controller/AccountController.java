@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.AccountResponseDTO;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.Account;
 import com.example.demo.repo.AccountRepo;
@@ -33,6 +34,28 @@ public class AccountController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @GetMapping("/getListAccounts")
+    public ResponseEntity<List<AccountResponseDTO>> getListAccounts() {
+        try {
+            List<AccountResponseDTO> accountList = new ArrayList<>();
+            accountsRepo.findAll().forEach(account -> {
+                AccountResponseDTO dto = new AccountResponseDTO();
+                dto.setId(account.getId());
+                dto.setUsername(account.getUsername());
+                dto.setRole(account.getRole());
+                accountList.add(dto);
+            });
+
+            if (accountList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(accountList, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     @GetMapping("/getAccountById/{id}")
     public ResponseEntity<Account> getAccountById(@PathVariable Long id) {
         Optional<Account> accountData = accountsRepo.findById(id);
@@ -51,20 +74,29 @@ public class AccountController {
     }
 
     @PostMapping("updateAccountById/{id}")
-    public ResponseEntity<Account> updateAccountById(@PathVariable Long id,@RequestBody Account newAccountData ) {
+    public ResponseEntity<Account> updateAccountById(@PathVariable Long id, @RequestBody Account newAccountData) {
         Optional<Account> oldAccountData = accountsRepo.findById(id);
 
-        if(oldAccountData.isPresent()) {
+        if (oldAccountData.isPresent()) {
             Account updatedAccountData = oldAccountData.get();
-            updatedAccountData.setUsername(newAccountData.getUsername());
-            updatedAccountData.setPassword(newAccountData.getPassword());
-            updatedAccountData.setRole(newAccountData.getRole());
-
-            Account accountObj =  accountsRepo.save(updatedAccountData);
+            if (newAccountData.getUsername() != null) {
+                updatedAccountData.setUsername(newAccountData.getUsername());
+            }
+            if (newAccountData.getPassword() != null) {
+                updatedAccountData.setPassword(newAccountData.getPassword());
+            }
+            if (newAccountData.getEmail() != null) {
+                updatedAccountData.setEmail(newAccountData.getEmail());
+            }
+            if (newAccountData.getPhone() != null) {
+                updatedAccountData.setPhone(newAccountData.getPhone());
+            }
+            Account accountObj = accountsRepo.save(updatedAccountData);
             return new ResponseEntity<>(accountObj, HttpStatus.OK);
         }
-        return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
 
     @DeleteMapping("/deleteAccountById/{id}")
     public ResponseEntity<HttpStatus> deleteAccountById(@PathVariable Long id) {
