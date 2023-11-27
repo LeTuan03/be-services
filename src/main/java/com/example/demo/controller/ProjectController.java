@@ -46,21 +46,43 @@ public class ProjectController {
 
     @PostMapping("/addProject")
     public ResponseEntity<?>  addProject(@RequestBody Project projects) {
-        if (projects.getAccountId() == null) {
+            if (projects.getAccountId() == null) {
             ErrorMessage errorMessage = new ErrorMessage("AccountId cannot be null");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
         }
-
+        if (projects.getName() == null || projects.getName().trim().isEmpty() ) {
+            ErrorMessage errorMessage = new ErrorMessage("Name cannot be null");
+            return new ResponseEntity<>(errorMessage, HttpStatus.NO_CONTENT);
+        }
+        if (projects.getStatus() == null || projects.getStatus().isEmpty() ) {
+            ErrorMessage errorMessage = new ErrorMessage("Status cannot be null");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+        }
         Project projectObj = projectsRepo.save(projects);
         return new ResponseEntity<>(projectObj, HttpStatus.OK);
     }
 
     @PutMapping("/updateProjectById/{id}")
-    public ResponseEntity<Project> updateProjectById(@PathVariable Long id, @RequestBody Project newProjectData) {
+    public ResponseEntity<?> updateProjectById(@PathVariable Long id, @RequestBody Project newProjectData) {
         Optional<Project> oldProjectDataOptional = projectsRepo.findById(id);
 
         if (oldProjectDataOptional.isPresent()) {
             Project oldProjectData = oldProjectDataOptional.get();
+
+            if (newProjectData.getAccountId() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("AccountId cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+            }
+
+            if (newProjectData.getName() == null || newProjectData.getName().trim().isEmpty()) {
+                ErrorMessage errorMessage = new ErrorMessage("Name cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.NO_CONTENT);
+            }
+
+            if (newProjectData.getStatus() == null || newProjectData.getStatus().isBlank()) {
+                ErrorMessage errorMessage = new ErrorMessage("Status cannot be null or empty");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+            }
 
             if (newProjectData.getName() != null) {
                 oldProjectData.setName(newProjectData.getName());

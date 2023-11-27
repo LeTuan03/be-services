@@ -17,7 +17,7 @@ public class Project {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Role cannot be null")
+    @NotNull(message = "Name cannot be null")
     private String name;
 
     @NotNull(message = "AccountId cannot be null")
