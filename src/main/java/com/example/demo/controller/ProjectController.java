@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.entity.ErrorMessage;
 import com.example.demo.entity.Project;
 import com.example.demo.repo.ProjectRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,13 @@ public class ProjectController {
     }
 
     @PostMapping("/addProject")
-    public ResponseEntity<Project>  addProject(@RequestBody Project projects) {
-        Project projectObj = projectsRepo.save(projects);
+    public ResponseEntity<?>  addProject(@RequestBody Project projects) {
+        if (projects.getAccountId() == null) {
+            ErrorMessage errorMessage = new ErrorMessage("AccountId cannot be null");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+        }
 
+        Project projectObj = projectsRepo.save(projects);
         return new ResponseEntity<>(projectObj, HttpStatus.OK);
     }
 

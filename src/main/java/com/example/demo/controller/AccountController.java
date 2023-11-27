@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.dto.AccountResponseDTO;
 import com.example.demo.dto.LoginRequest;
 import com.example.demo.entity.Account;
+import com.example.demo.entity.ErrorMessage;
 import com.example.demo.repo.AccountRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -67,7 +68,28 @@ public class AccountController {
     }
 
     @PostMapping("/addAccount")
-    public ResponseEntity<Account>  addAccount(@RequestBody Account accounts) {
+    public ResponseEntity<?>  addAccount(@RequestBody Account accounts) {
+
+        if (accounts.getRole() == null) {
+            ErrorMessage errorMessage = new ErrorMessage("Role cannot be null");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        if (accounts.getUsername() == null) {
+            ErrorMessage errorMessage = new ErrorMessage("Username cannot be null");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        if (accounts.getPassword() == null) {
+            ErrorMessage errorMessage = new ErrorMessage("Password cannot be null");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
+        if (accountsRepo.existsByUsername(accounts.getUsername())) {
+            ErrorMessage errorMessage = new ErrorMessage("Username is already taken");
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+        }
+
         Account accountObj = accountsRepo.save(accounts);
 
         return new ResponseEntity<>(accountObj, HttpStatus.OK);
@@ -105,8 +127,18 @@ public class AccountController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<Account> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
         try {
+
+            if (loginRequest.getUsername() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("Username cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            }
+            if (loginRequest.getPassword() == null) {
+                ErrorMessage errorMessage = new ErrorMessage("Password cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+            }
+
             Account account = accountsRepo.findByUsernameAndPassword(
                     loginRequest.getUsername(),
                     loginRequest.getPassword()
@@ -115,7 +147,8 @@ public class AccountController {
             if (account != null) {
                 return new ResponseEntity<>(account, HttpStatus.OK);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+                ErrorMessage errorMessage = new ErrorMessage("Account or password is incorrect!!");
+                return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
             }
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

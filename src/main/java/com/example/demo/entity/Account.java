@@ -27,9 +27,7 @@ public class Account {
     @Size(min = 1, message = "Password cannot be empty")
     private String password;
 
-
     @NotNull(message = "Role cannot be null")
-    @Size(min = 1, message = "Role cannot be empty")
     private String role;
 
     private String email;

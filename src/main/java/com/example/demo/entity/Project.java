@@ -20,6 +20,7 @@ public class Project {
     @NotNull(message = "Role cannot be null")
     private String name;
 
+    @NotNull(message = "AccountId cannot be null")
     private Integer accountId;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -38,6 +39,10 @@ public class Project {
     private String note;
 
     private String description;
+
+    public Project(String errorMessage) {
+        this.name = errorMessage;
+    }
 
     @PrePersist
     protected void onCreate() {

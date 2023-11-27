@@ -6,4 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AccountRepo extends JpaRepository<Account, Long> {
     Account findByUsernameAndPassword(String username, String password);
 
+    boolean existsByUsername(String username);
+
+    boolean existsByPassword(String password);
 }
