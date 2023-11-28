@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.ProjectDTO;
 import com.example.demo.entity.ErrorMessage;
 import com.example.demo.entity.Project;
 import com.example.demo.repo.ProjectRepo;
@@ -136,5 +137,8 @@ public class ProjectController {
         }
     }
 
-
+    @PostMapping("/search")
+    public List<Project> search(@RequestBody ProjectDTO dto) {
+        return projectsRepo.searchProjects(dto.getAccountId(), dto.getName());
+    }
 }

@@ -155,5 +155,11 @@ public class AccountController {
         }
     }
 
+    @GetMapping("/searchAcc")
+    public ResponseEntity<List<Account>> searchAcc(@RequestParam("query") String query){
+        List<Account> projects = accountsRepo.searchAcc(query);
+        return new ResponseEntity<>(projects, HttpStatus.OK);
+    }
+
 
 }
