@@ -161,5 +161,35 @@ public class AccountController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
+    @GetMapping("/getMember/{role}")
+    public ResponseEntity<List<AccountResponseDTO>> getMember(@PathVariable String role) {
+        try {
+            List<Account> memberList = accountsRepo.findByRole(role);
+
+            if (memberList == null || memberList.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            List<AccountResponseDTO> responseList = convertToResponseDTOList(memberList);
+
+            return new ResponseEntity<>(responseList, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private List<AccountResponseDTO> convertToResponseDTOList(List<Account> accountList) {
+        List<AccountResponseDTO> responseList = new ArrayList<>();
+        for (Account account : accountList) {
+            AccountResponseDTO dto = new AccountResponseDTO();
+            dto.setId(account.getId());
+            dto.setUsername(account.getUsername());
+            dto.setRole(account.getRole());
+            responseList.add(dto);
+        }
+        return responseList;
+    }
+
 
 }

@@ -4,7 +4,9 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "tbl_project")
@@ -23,6 +25,8 @@ public class Project {
     @NotNull(message = "AccountId cannot be null")
     private Integer accountId;
 
+    private Integer memberId;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 
@@ -30,7 +34,7 @@ public class Project {
 
     private  Date endDate;
 
-    private Integer createdBy;
+    private String createdBy;
 
     private Date updatedAt;
 
@@ -40,6 +44,8 @@ public class Project {
 
     private String description;
 
+    @OneToMany(mappedBy = "projectId", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Task> tasks = new ArrayList<>();
     public Project(String errorMessage) {
         this.name = errorMessage;
     }

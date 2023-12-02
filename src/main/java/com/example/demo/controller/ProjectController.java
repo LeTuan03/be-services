@@ -109,6 +109,7 @@ public class ProjectController {
                 oldProjectData.setDescription(newProjectData.getDescription());
             }
 
+
             oldProjectData.setUpdatedAt(new Date());
 
             Project updatedProjectData = projectsRepo.save(oldProjectData);

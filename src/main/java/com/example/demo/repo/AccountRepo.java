@@ -16,4 +16,7 @@ public interface AccountRepo extends JpaRepository<Account, Long> {
     @Query("SELECT p FROM Account p WHERE " +
             "p.username LIKE CONCAT('%',:query, '%')")
     List<Account> searchAcc(String query);
+
+    List<Account> findByRole(String role);
+
 }
