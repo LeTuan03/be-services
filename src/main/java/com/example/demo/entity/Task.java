@@ -44,6 +44,14 @@ public class Task {
 
     private Date updatedAt;
 
+    private String spentTime;
+
+    private String estimatedTime;
+
+    private Long status;
+
+    private String description;
+
     @Temporal(TemporalType.TIMESTAMP)
     private Date createdAt;
 

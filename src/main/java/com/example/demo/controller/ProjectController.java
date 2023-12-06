@@ -46,22 +46,28 @@ public class ProjectController {
     }
 
     @PostMapping("/addProject")
-    public ResponseEntity<?>  addProject(@RequestBody Project projects) {
+    public ResponseEntity<?> addProject(@RequestBody Project projects) {
+        try {
             if (projects.getAccountId() == null) {
-            ErrorMessage errorMessage = new ErrorMessage("AccountId cannot be null");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+                ErrorMessage errorMessage = new ErrorMessage("AccountId cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+            }
+            if (projects.getName() == null || projects.getName().trim().isEmpty()) {
+                ErrorMessage errorMessage = new ErrorMessage("Name cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.NO_CONTENT);
+            }
+            if (projects.getStatus() == null || projects.getStatus().isEmpty()) {
+                ErrorMessage errorMessage = new ErrorMessage("Status cannot be null");
+                return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
+            }
+            Project projectObj = projectsRepo.save(projects);
+            return new ResponseEntity<>(projectObj, HttpStatus.OK);
+        } catch (Exception e) {
+            ErrorMessage errorMessage = new ErrorMessage("An unexpected error occurred: " + e.getMessage());
+            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
-        if (projects.getName() == null || projects.getName().trim().isEmpty() ) {
-            ErrorMessage errorMessage = new ErrorMessage("Name cannot be null");
-            return new ResponseEntity<>(errorMessage, HttpStatus.NO_CONTENT);
-        }
-        if (projects.getStatus() == null || projects.getStatus().isEmpty() ) {
-            ErrorMessage errorMessage = new ErrorMessage("Status cannot be null");
-            return new ResponseEntity<>(errorMessage, HttpStatus.BAD_GATEWAY);
-        }
-        Project projectObj = projectsRepo.save(projects);
-        return new ResponseEntity<>(projectObj, HttpStatus.OK);
     }
+
 
     @PutMapping("/updateProjectById/{id}")
     public ResponseEntity<?> updateProjectById(@PathVariable Long id, @RequestBody Project newProjectData) {

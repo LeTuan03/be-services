@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -64,7 +65,7 @@ public class TaskController {
         }
 
         if (task.getTaskName() == null) {
-            ErrorMessage errorMessage = new ErrorMessage("Taskname cannot be null");
+            ErrorMessage errorMessage = new ErrorMessage("Task name cannot be null");
             return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
         }
 
@@ -80,7 +81,7 @@ public class TaskController {
         try {
             for (Task task : tasks) {
                 if (task.getProjectId() == null || task.getTaskName() == null) {
-                    ErrorMessage errorMessage = new ErrorMessage("ProjectId and Taskname cannot be null");
+                    ErrorMessage errorMessage = new ErrorMessage("ProjectId and Task name cannot be null");
                     return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
                 }
 
@@ -97,6 +98,10 @@ public class TaskController {
                         updatedTask.setPercentComplete(task.getPercentComplete());
                         updatedTask.setProjectName(task.getProjectName());
                         updatedTask.setUpdatedAt(new Date());
+                        updatedTask.setStatus(task.getStatus());
+                        updatedTask.setSpentTime(task.getSpentTime());
+                        updatedTask.setEstimatedTime(task.getEstimatedTime());
+                        updatedTask.setDescription(task.getDescription());
 
                         savedTasks.add(taskRepo.save(updatedTask));
                         continue;
@@ -140,6 +145,10 @@ public class TaskController {
             updatedTaskData.setDueDate(task.getDueDate());
             updatedTaskData.setProjectName(task.getProjectName());
             updatedTaskData.setPercentComplete(task.getPercentComplete());
+            updatedTaskData.setStatus(task.getStatus());
+            updatedTaskData.setSpentTime(task.getSpentTime());
+            updatedTaskData.setEstimatedTime(task.getEstimatedTime());
+            updatedTaskData.setDescription(task.getDescription());
 
             Task taskObj = taskRepo.save(updatedTaskData);
             return new ResponseEntity<>(taskObj, HttpStatus.OK);
